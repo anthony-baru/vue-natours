@@ -56,12 +56,6 @@
                 >Manage reviews</a
               >
             </li>
-            <li>
-              <a href="#">
-                <svg>
-                  <use xlink:href="img/icons.svg#icon-briefcase"></use></svg
-              ></a>
-            </li>
           </ul>
         </div>
       </nav>
@@ -92,7 +86,7 @@
             <div class="form__group form__photo-upload">
               <img
                 class="form__user-photo"
-                src="img/user.jpg"
+                src="/img/users/user-1.jpg"
                 alt="User photo"
               /><a class="btn-text" href="">Choose new photo</a>
             </div>

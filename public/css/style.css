@@ -301,7 +301,7 @@ body {
 .header {
   background-color: #444;
   padding: 0 5rem;
-  height: 8rem;
+  min-height: 8rem;
   position: relative;
   z-index: 100;
   display: -webkit-box;
@@ -313,6 +313,7 @@ body {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 @media only screen and (max-width: 62.5em) {
   .header {
