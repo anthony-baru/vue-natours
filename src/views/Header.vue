@@ -19,19 +19,30 @@
       <img src="/img/logo-white.png" alt="Natours logo" />
     </div>
     <nav class="nav nav--user">
-      <!-- <a href="#" class="nav__el">My bookings</a>
-      <a href="#" class="nav__el">
+      <router-link to="/profile" v-if="currentUser" href="#" class="nav__el"
+        >My bookings</router-link
+      >
+      <router-link to="/profile" v-if="currentUser" href="#" class="nav__el">
         <img
           src="/img/users/user-1.jpg"
           alt="User photo"
           class="nav__user-img"
         />
-        <span>Jonas</span>
-      </a> -->
-      <router-link to="/signin" tag="button" class="nav__el">
+        <span>{{ user.name }}</span>
+      </router-link>
+      <router-link
+        v-if="!currentUser"
+        to="/signin"
+        tag="button"
+        class="nav__el"
+      >
         Sign In
       </router-link>
-      <router-link to="/signup" tag="button" class="nav__el nav__el--cta"
+      <router-link
+        v-if="!currentUser"
+        to="/signup"
+        tag="button"
+        class="nav__el nav__el--cta"
         >Sign up</router-link
       >
     </nav>
@@ -39,7 +50,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    currentUser() {
+      return this.$store.state.authManage.status.loggedIn;
+    },
+    user() {
+      return this.$store.state.authManage.auth.user;
+    },
+  },
+};
 </script>
 
 <style></style>
