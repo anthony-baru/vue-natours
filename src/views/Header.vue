@@ -45,6 +45,15 @@
         class="nav__el nav__el--cta"
         >Sign up</router-link
       >
+      <a
+        @click.prevent="logout"
+        v-if="currentUser"
+        to="/signout"
+        tag="button"
+        class="nav__el"
+      >
+        Sign Out
+      </a>
     </nav>
   </header>
 </template>
@@ -57,6 +66,12 @@ export default {
     },
     user() {
       return this.$store.state.authManage.auth.user;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("authManage/logout");
+      this.$router.push("/");
     },
   },
 };
