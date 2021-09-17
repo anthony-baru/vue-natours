@@ -84,11 +84,13 @@
               />
             </div>
             <div class="form__group form__photo-upload">
-              <img
-                class="form__user-photo"
-                src="/img/users/user-1.jpg"
-                alt="User photo"
-              /><a class="btn-text" href="">Choose new photo</a>
+              <label style="display: block" class="form__label" for="email">
+                Choose new photo</label
+              >
+              <div class="preview">
+                <img v-if="url" :src="url" class="form__user-photo" />
+              </div>
+              <input type="file" name="photo" @change="onFileChange" />
             </div>
             <div class="form__group right">
               <button class="btn btn--small btn--green">Save settings</button>
@@ -147,7 +149,27 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      url: "/img/users/user-1.jpg",
+    };
+  },
+  methods: {
+    onFileChange(e) {
+      const file = e.target.files[0];
+      this.url = URL.createObjectURL(file);
+    },
+  },
+  metaInfo: {
+    title: "Natours | Profile",
+    // titleTemplate: "%s - Home",
+    htmlAttrs: {
+      lang: "en",
+      amp: true,
+    },
+  },
+};
 </script>
 
 <style></style>

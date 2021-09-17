@@ -4,25 +4,30 @@ const API_URL = "http://localhost:3000/api/v1";
 
 class AuthService {
   async login(user) {
-    const { data: loginResponse } = await axios.post(
-      API_URL + "/users/signin",
-      {
-        email: user.email,
-        password: user.password,
+    try {
+      const { data: loginResponse } = await axios.post(
+        API_URL + "/users/signin",
+        {
+          email: user.email,
+          password: user.password,
+        }
+      );
+
+      console.log("loginResponse.data", loginResponse);
+
+      if (loginResponse.token) {
+        window.localStorage.setItem("auth", JSON.stringify(loginResponse.data));
       }
-    );
 
-    console.log("loginResponse.data", loginResponse);
-
-    if (loginResponse.token) {
-      window.localStorage.setItem("auth", JSON.stringify(loginResponse.data));
+      return Promise.resolve(loginResponse.data);
+    } catch (error) {
+      console.table("errorR", error);
+      return Promise.reject(error);
     }
-
-    return loginResponse.data;
   }
 
   logout() {
-    localStorage.removeItem("user");
+    localStorage.removeItem("auth");
   }
 
   async register(user) {

@@ -15,7 +15,7 @@
 
 <style></style>
 <script>
-import AppHeader from "./views/Header.vue";
+import AppHeader from "./components/Header.vue";
 import AppFooter from "./views/Footer.vue";
 
 console.log(process.env, "process env");

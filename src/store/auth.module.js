@@ -12,11 +12,12 @@ export const authManage = {
     async login({ commit }, userLoginRequestBody) {
       try {
         const loginRes = await AuthService.login(userLoginRequestBody);
-        console.log("loginRes", loginRes);
+
         commit("loginSuccess", loginRes);
         return Promise.resolve(loginRes);
       } catch (error) {
         commit("loginFailure");
+
         return Promise.reject(error);
       }
     },

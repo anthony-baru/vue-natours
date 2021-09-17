@@ -71,7 +71,10 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("authManage/logout");
-      this.$router.push("/");
+
+      if (this.$route.path != "/") {
+        this.$router.push("/");
+      }
     },
   },
 };

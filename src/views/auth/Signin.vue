@@ -2,6 +2,9 @@
   <main class="main">
     <div class="login-form">
       <h2 class="heading-secondary ma-bt-lg">Log into your account</h2>
+      <div v-show="loading" class="alert" :class="`alert--${alertType}`">
+        {{ message }}
+      </div>
       <form class="form" @submit.prevent="handleLogin">
         <div class="form__group">
           <label class="form__label" for="email">Email address</label>
@@ -37,7 +40,7 @@
           ></div>
         </div>
         <div class="form__group">
-          <button class="btn btn--green">Login</button>
+          <button class="btn btn--green" :disabled="btnDisable">Login</button>
         </div>
       </form>
     </div>
@@ -51,7 +54,10 @@ export default {
     return {
       email: "",
       password: "",
+      alert: false,
+      alertType: null,
       loading: false,
+      btnDisable: false,
       message: "",
     };
   },
@@ -68,11 +74,11 @@ export default {
   },
   methods: {
     async handleLogin() {
-      this.loading = true;
+      this.btnDisable = true;
       try {
         const isValid = await this.$validator.validateAll();
+
         if (!isValid) {
-          this.loading = false;
           return;
         }
         if (this.email && this.password) {
@@ -82,14 +88,22 @@ export default {
           });
           this.$router.push("/");
         }
+        this.btnDisable = false;
       } catch (error) {
-        console.log(error);
-        this.loading = false;
-        this.message =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
+        this.btnDisable = false;
+
+        this.showAlert("error", error);
       }
+    },
+    showAlert(type, message) {
+      this.loading = true;
+      this.message = message;
+      this.alertType = type;
+      setTimeout(() => {
+        this.loading = false;
+        this.message = "";
+        this.alertType = null;
+      }, 10000);
     },
   },
 };
