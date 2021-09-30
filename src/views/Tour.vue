@@ -132,11 +132,15 @@
         <section class="section-cta">
             <div class="cta">
                 <div class="cta__img cta__img--logo">
-                    <img src="/img/logo-white.png" alt="Natours logo" />
+                    <img src="../assets/img/logo-white.png" alt="Natours logo" />
                 </div>
-                <img class="cta__img cta__img--1" src="/img/tours/tour-5-2.jpg" alt="" /><img
+                <img
+                    class="cta__img cta__img--1"
+                    :src="baseUrl + '/img/tours/' + tour.images[0]"
+                    alt=""
+                /><img
                     class="cta__img cta__img--2"
-                    src="/img/tours/tour-5-1.jpg"
+                    :src="baseUrl + '/img/tours/' + tour.images[1]"
                     alt=""
                 />
                 <div class="cta__content">

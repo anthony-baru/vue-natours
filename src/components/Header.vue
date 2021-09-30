@@ -1,5 +1,5 @@
 <template>
-    <header class="header">
+    <v-app-bar dark color="#444" class="">
         <nav class="nav nav--tours">
             <router-link to="/" class="nav__el">All tours</router-link>
             <form class="nav__search" v-show="$route.path == '/'">
@@ -42,7 +42,7 @@
                 Sign Out
             </a>
         </nav>
-    </header>
+    </v-app-bar>
 </template>
 
 <script>

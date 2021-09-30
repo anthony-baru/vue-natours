@@ -6,4 +6,8 @@ module.exports = {
         // https: false,
         // hotOnly: false,
     },
+
+    transpileDependencies: [
+      'vuetify'
+    ]
 };

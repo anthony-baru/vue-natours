@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import VeeValidate from "vee-validate";
 import VueMeta from "vue-meta";
+import vuetify from './plugins/vuetify'
 
 require("@/assets/css/style.css");
 
@@ -13,5 +14,6 @@ Vue.use(VeeValidate);
 new Vue({
     router,
     store,
-    render: (h) => h(App),
+    vuetify,
+    render: (h) => h(App)
 }).$mount("#app");
