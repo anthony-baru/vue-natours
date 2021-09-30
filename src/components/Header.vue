@@ -15,7 +15,7 @@
             <img src="/img/logo-white.png" alt="Natours logo" />
         </div>
         <nav class="nav nav--user">
-            <router-link to="/profile" v-if="currentUser" href="#" class="nav__el"
+            <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el"
                 >My bookings</router-link
             >
             <router-link to="/profile" v-if="currentUser" href="#" class="nav__el">

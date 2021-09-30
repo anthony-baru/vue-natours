@@ -37,6 +37,9 @@ const routes = [
         path: "/profile",
         name: "Profile",
         component: Profile,
+        redirect: {
+            name: "Settings",
+        },
         children: [
             {
                 name: "Settings",

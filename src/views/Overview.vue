@@ -1,13 +1,10 @@
 <template>
-  <!-- In video, this <main> element is wrongly called: <section class="overview">. So in pug template, please use main.main instead of section.overview -->
-  <main class="main">
-    <div class="card-container">
-      <app-tour-card
-        v-for="tour in tours"
-        :tour="tour"
-        :key="tour.id"
-      ></app-tour-card>
-      <!-- <div class="card">
+    <!-- In video, this <main> element is wrongly called: <section class="overview">. So in pug template, please use main.main instead of section.overview -->
+    <main class="main">
+        <div class="card-container">
+            <app-tour-card v-for="tour in tours" :tour="tour" :key="tour.id"></app-tour-card>
+            <!-- 
+        <div class="card">
         <div class="card__header">
           <div class="card__picture">
             <div class="card__picture-overlay">&nbsp;</div>
@@ -387,32 +384,32 @@
           >
         </div>
       </div> -->
-    </div>
-  </main>
+        </div>
+    </main>
 </template>
 
 <script>
 import AppTourCard from "../components/tour/TourCard.vue";
 import tourservice from "../services/tour.service";
 export default {
-  name: "all-tours",
-  components: { AppTourCard },
-  metaInfo: {
-    title: "Natours | Home",
-    // titleTemplate: "%s - Home",
-    htmlAttrs: {
-      lang: "en",
-      amp: true,
+    name: "all-tours",
+    components: { AppTourCard },
+    metaInfo: {
+        title: "Natours | Home",
+        // titleTemplate: "%s - Home",
+        htmlAttrs: {
+            lang: "en",
+            amp: true,
+        },
     },
-  },
-  data() {
-    return {
-      tours: null,
-    };
-  },
-  async created() {
-    this.tours = await tourservice.getTours();
-  },
+    data() {
+        return {
+            tours: null,
+        };
+    },
+    async created() {
+        this.tours = await tourservice.getTours();
+    },
 };
 </script>
 
