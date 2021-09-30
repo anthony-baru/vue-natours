@@ -12,7 +12,7 @@
             </form>
         </nav>
         <div class="header__logo">
-            <img src="/img/logo-white.png" alt="Natours logo" />
+            <img src="../assets/img/logo-white.png" alt="Natours logo" />
         </div>
         <nav class="nav nav--user">
             <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el"
