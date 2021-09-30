@@ -146,13 +146,11 @@
                         today!
                     </p>
                     <router-link
-                        :to="$store.state.authManage.status.loggedIn ? '/book' : '/signin'"
+                        :to="authManage.status.loggedIn ? '/book' : '/signin'"
                         class="btn btn--green span-all-rows"
                         tag="button"
                         v-text="
-                            $store.state.authManage.status.loggedIn
-                                ? 'Book tour now!'
-                                : 'Log In to book tour!'
+                            authManage.status.loggedIn ? 'Book tour now!' : 'Log In to book tour!'
                         "
                     ></router-link>
                 </div>
@@ -164,6 +162,7 @@
 <script>
 import tourService from "../services/tour.service";
 import TourMap from "../components/tour/TourMap.vue";
+import { mapState } from "vuex";
 export default {
     name: "tour",
     components: { TourMap },
@@ -180,6 +179,9 @@ export default {
                 year: "numeric",
             });
         },
+        ...mapState({
+            authManage: (state) => state.authManage,
+        }),
     },
     async created() {
         const tourId = this.$route.params.id;
