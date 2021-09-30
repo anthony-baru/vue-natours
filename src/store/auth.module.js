@@ -31,6 +31,7 @@ export const authManage = {
             }
         },
         async updatePassword({ commit }, pwd) {
+            console.log(commit);
             return AuthService.updatePassword(pwd);
         },
         async changeAccountSettings({ commit }, payload) {
