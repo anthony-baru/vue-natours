@@ -7,6 +7,7 @@ import Signup from "../views/auth/Signup.vue";
 import Settings from "../views/profile/Settings.vue";
 import Bookings from "../views/profile/Bookings.vue";
 import Reviews from "../views/profile/Reviews.vue";
+import ManageTours from "../views/manage/ManageTours.vue";
 import Tour from "../views/Tour.vue";
 import Profile from "../views/Profile.vue";
 
@@ -61,6 +62,11 @@ const routes = [
             //     path: "billing",
             //     component: Billing,
             // },
+            {
+                name: "ManageTours",
+                path: "manage/tours",
+                component: ManageTours,
+            },
         ],
     },
     {

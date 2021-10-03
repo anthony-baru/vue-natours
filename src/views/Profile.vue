@@ -36,17 +36,23 @@
                     <h5 class="admin-nav__heading">Admin</h5>
                     <ul class="side-nav">
                         <li>
-                            <a href="#">
+                            <router-link
+                                :to="{ name: 'ManageTours' }"
+                                active-class="side-nav--active"
+                            >
                                 <svg>
                                     <use xlink:href="img/icons.svg#icon-map"></use></svg
-                                >Manage tours</a
+                                >Manage tours</router-link
                             >
                         </li>
-                        <li>
-                            <a href="#">
+                        <!-- <li>
+                            <router-link
+                                :to="{ name: 'ManageUsers' }"
+                                active-class="side-nav--active"
+                            >
                                 <svg>
                                     <use xlink:href="img/icons.svg#icon-users"></use></svg
-                                >Manage users</a
+                                >Manage users</router-link
                             >
                         </li>
                         <li>
@@ -55,7 +61,7 @@
                                     <use xlink:href="img/icons.svg#icon-star"></use></svg
                                 >Manage reviews</a
                             >
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </nav>

@@ -105,13 +105,13 @@
                     </v-dialog>
                 </v-toolbar>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
                 <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
                 <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
             </template>
-            <template v-slot:no-data>
+            <!-- <template v-slot:no-data>
                 <v-btn color="primary" @click="initialize"> Reset </v-btn>
-            </template>
+            </template> -->
         </v-data-table>
     </v-container>
 </template>
@@ -179,12 +179,16 @@ export default {
 
     methods: {
         async getReviews() {
-            this.reviews = await reviewService.getReviews();
-            this.reviews.filter((el) => {
-                el.createdAt = format(new Date(el.createdAt), "dd-MMM-YYY, HH:mm");
-                el.rating = el.rating.toString();
-            });
-            console.log("myreviews", this.reviews);
+            try {
+                this.reviews = await reviewService.getReviews();
+                this.reviews.filter((el) => {
+                    el.createdAt = format(new Date(el.createdAt), "dd-MMM-YYY, HH:mm");
+                    el.rating = el.rating.toString();
+                });
+                console.log("myreviews", this.reviews);
+            } catch (error) {
+                console.log(error);
+            }
         },
         initialize() {
             this.desserts = [

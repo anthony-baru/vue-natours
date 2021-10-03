@@ -1,6 +1,6 @@
 <template>
     <v-app-bar dark color="#444" class="">
-        <nav class="nav nav--tours">
+        <nav class="nav nav--tours" aria-label="">
             <router-link to="/" class="nav__el">All tours</router-link>
             <form class="nav__search" v-show="$route.path == '/'">
                 <button class="nav__search-btn">
@@ -14,7 +14,7 @@
         <div class="header__logo">
             <img src="../assets/img/logo-white.png" alt="Natours logo" />
         </div>
-        <nav class="nav nav--user">
+        <nav class="nav nav--user" aria-label="">
             <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el"
                 >My bookings</router-link
             >
@@ -70,4 +70,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.nav-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+</style>
