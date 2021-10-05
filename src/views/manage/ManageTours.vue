@@ -23,7 +23,8 @@
                                     <v-row>
                                         <!-- group size -->
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field name="maxGroupSize" v-model="editedItem.maxGroupSize" label="Group Size" type="number" :rules="[required('Group Size')]"></v-text-field>
+                                            <v-text-field name="maxGroupSize" v-model="editedItem.maxGroupSize" label="Group Size" type="number" :rules="[required('Group Size')]">
+                                            </v-text-field>
                                             {{ editedItem.maxGroupSize + "hi" }}
                                             <!-- :rules="[required('Group Size')]" -->
                                         </v-col>
@@ -47,12 +48,39 @@
 
                                         <!-- price -->
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field name="price" v-model="editedItem.price" label="Price"></v-text-field>
+                                            <v-text-field name="price" v-model="editedItem.price" label="Price">
+                                            </v-text-field>
                                             <!-- :rules="[required('Price'), floatFormat()]" -->
                                         </v-col>
                                         <!-- guides -->
                                         <v-col cols="12">
-                                            <v-autocomplete name="guides" v-model="values" :items="items"  dense chips small-chips label="Guides" multiple></v-autocomplete>
+                                            <v-autocomplete name="guides" v-model="selectedGuides" :items="guides" filled chips color="blue-grey lighten-2" label="Select" item-text="name" item-value="_id" multiple>
+                                                <template v-slot:selection="data">
+                                                    <v-chip v-bind="data.attrs" :input-value="data.selected" close @click="data.select" @click:close="remove(data.item)">
+                                                        <v-avatar left>
+                                                            <v-img :src="data.item.avatar"></v-img>
+                                                        </v-avatar>
+                                                        {{ data.item.name }}
+                                                    </v-chip>
+                                                </template>
+                                                <template v-slot:item="data">
+                                                    <template v-if="typeof data.item !== 'object'">
+                                                        <v-list-item-content v-text="data.item">
+                                                        </v-list-item-content>
+                                                    </template>
+                                                    <template v-else>
+                                                        <v-list-item-avatar>
+                                                            <img :src="data.item.avatar" />
+                                                        </v-list-item-avatar>
+                                                        <v-list-item-content>
+                                                            <v-list-item-title v-html="data.item.name">
+                                                            </v-list-item-title>
+                                                            <v-list-item-subtitle v-html="data.item.group">
+                                                            </v-list-item-subtitle>
+                                                        </v-list-item-content>
+                                                    </template>
+                                                </template>
+                                            </v-autocomplete>
                                         </v-col>
                                         <!-- start dates -->
                                         <v-col cols="12">
@@ -89,31 +117,6 @@
                                             <v-textarea name="description" label="Description" v-model="editedItem.description" :rules="[required('Description')]" hint="Tour description"></v-textarea>
                                         </v-col>
                                         <!-- imageCover -->
-                                        <!-- <v-col cols="12" sm="6" md="4">
-                                            <v-text-field
-                                                v-model="editedItem.imageCover"
-                                                label="Image Cover"
-                                            ></v-text-field>
-                                        </v-col> -->
-
-                                        <!-- <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.fat"
-                                                    label="Fat (g)"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.carbs"
-                                                    label="Carbs (g)"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.protein"
-                                                    label="Protein (g)"
-                                                ></v-text-field>
-                                            </v-col> -->
                                     </v-row>
                                 </v-container>
                             </v-card-text>
@@ -158,17 +161,24 @@
 
 <script>
 import tourService from "../../services/tour.service";
+import userService from "../../services/user.service";
 import validations from "@/utils/Validations";
 import {
     format
 } from "date-fns";
-
+// const srcs = {
+//     1: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+//     2: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+//     3: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+//     4: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+//     5: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+// };
 export default {
     name: "ManageTours",
     data: () => ({
-        items: ['foo', 'bar', 'fizz', 'buzz'],
-        values: ['foo', 'bar'],
-        value: null,
+        chosenGuides: [],
+
+        guides: [],
 
         menu: false,
         dates: ["2021-10-5"],
@@ -225,14 +235,34 @@ export default {
                         return el;
                     });
                 } else {
-                    return this.datePickerStartDates
+                    return this.datePickerStartDates;
                 }
             },
             set: function (newValue) {
                 if (this.editedItem.startDates) {
-                    this.editedItem.startDates = newValue
+                    this.editedItem.startDates = newValue;
                 } else {
                     this.datePickerStartDates = newValue;
+                }
+            },
+        },
+        selectedGuides: {
+            get: function () {
+                if (this.editedItem.guides) {
+                    let guideIds = this.editedItem.guides.map((el) => {
+                        return el._id;
+                    });
+
+                    return guideIds;
+                } else {
+                    return [];
+                }
+            },
+            set: function (newValue) {
+                if (this.editedItem.guides) {
+                    return newValue;
+                } else {
+                    return [];
                 }
             },
         },
@@ -249,11 +279,22 @@ export default {
 
     created() {
         this.getTours();
+        this.getGuides();
     },
 
     methods: {
         async getTours() {
-            this.tours = await tourService.getTours();
+            let tours = await tourService.getTours();
+            this.tours = tours;
+        },
+        async getGuides() {
+            const users = await userService.getUsers();
+
+            const guides = await users.filter((el) => {
+                return el.role == "guide" || el.role == "lead-guide";
+            });
+            console.log(guides);
+            this.guides = guides;
         },
 
         editItem(item) {
@@ -299,6 +340,10 @@ export default {
 
             if (this.datePickerStartDates) {
                 value.startDates = value.startDates.split(",");
+            }
+
+            if (this.chosenGuides) {
+                value.guides = value.guides.split(",");
             }
 
             console.log("formValues", value);

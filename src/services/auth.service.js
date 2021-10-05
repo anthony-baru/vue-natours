@@ -1,11 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:3000/api/v1";
-
 class AuthService {
     async login(user) {
-        const { data: loginResponse } = await axios.post(API_URL + "/users/signin", {
+        const { data: loginResponse } = await axios.post("/users/signin", {
             email: user.email,
             password: user.password,
         });
@@ -24,7 +22,7 @@ class AuthService {
     }
 
     async register(user) {
-        const { data: regRes } = await axios.post(API_URL + "/users/signup", {
+        const { data: regRes } = await axios.post("/users/signup", {
             name: user.name,
             email: user.email,
             password: user.password,
@@ -39,7 +37,7 @@ class AuthService {
 
     async updatePassword(pwd) {
         const { data: updatePwdRes } = await axios.patch(
-            API_URL + "/users/update-password",
+             "/users/update-password",
             {
                 oldPassword: pwd.oldPassword,
                 newPassword: pwd.newPassword,
@@ -56,7 +54,7 @@ class AuthService {
 
     async changeAccountSettings(payload) {
         const { data: changeAccountSettings } = await axios.patch(
-            API_URL + "/users/update-me",
+         "/users/update-me",
             payload,
             { headers: authHeader() }
         );

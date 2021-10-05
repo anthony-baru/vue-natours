@@ -8,6 +8,9 @@ const initialState = auth
 export const authManage = {
     namespaced: true,
     state: initialState,
+    getters:{
+
+    },
     actions: {
         async login({ commit }, userLoginRequestBody) {
             const loginRes = await AuthService.login(userLoginRequestBody);

@@ -11,6 +11,8 @@ import ManageTours from "../views/manage/ManageTours.vue";
 import Tour from "../views/Tour.vue";
 import Profile from "../views/Profile.vue";
 
+import store from '../store';
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -66,6 +68,7 @@ const routes = [
                 name: "ManageTours",
                 path: "manage/tours",
                 component: ManageTours,
+                meta:{requiresAuth:true}
             },
         ],
     },
@@ -84,5 +87,29 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes,
 });
+
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(record => record.meta.requiresAuth)) {
+      if (store.state.authManage.status.loggedIn) {
+        next()
+        return
+      }
+      next('/login')
+    } else {
+      next()
+    }
+  })
+  
+//   router.beforeEach((to, from, next) => {
+//     if (to.matched.some((record) => record.meta.guest)) {
+//       if (store.state.authManage.status.loggedIn) {
+//         next("/posts");
+//         return;
+//       }
+//       next();
+//     } else {
+//       next();
+//     }
+//   });
 
 export default router;
