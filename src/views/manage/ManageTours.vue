@@ -12,7 +12,7 @@
                             New Tour
                         </v-btn>
                     </template>
-                    <v-form ref="crud-form" @submit.prevent="save" v-model="valid">
+                    <v-form ref="crud-form" @submit.prevent="save" v-model="valid" enctype="mulipart/form-data">
                         <v-card>
                             <v-card-title>
                                 <span class="text-h5">{{ formTitle }}</span>
@@ -75,8 +75,8 @@
                                                         <v-list-item-content>
                                                             <v-list-item-title v-html="data.item.name">
                                                             </v-list-item-title>
-                                                            <v-list-item-subtitle v-html="data.item.group">
-                                                            </v-list-item-subtitle>
+                                                            <!-- <v-list-item-subtitle v-html="data.item.group">
+                                                            </v-list-item-subtitle> -->
                                                         </v-list-item-content>
                                                     </template>
                                                 </template>
@@ -98,15 +98,25 @@
                                                             <v-btn text color="primary" @click="menu = false">
                                                                 Cancel
                                                             </v-btn>
-                                                            <v-btn text color="primary" @click="
-                                                                        $refs.menu.save(startDates)
-                                                                    ">
+                                                            <v-btn text color="primary" @click="$refs.menu.save(startDates)">
                                                                 OK
                                                             </v-btn>
                                                         </v-date-picker>
                                                     </v-menu>
                                                 </v-col>
                                             </v-row>
+                                        </v-col>
+                                        <!-- image cover -->
+                                        <v-col>
+                                            <v-row>
+                                                <v-col cols="12" md="4">
+                                                    <v-file-input name="imageCover" counter multiple show-size small-chips truncate-length="47" label="Image Cover" hint="Only one image allowed"></v-file-input>
+                                                </v-col>
+                                                <v-col cols="12" md="8">
+                                                    <v-file-input name="images" counter multiple show-size small-chips truncate-length="47" label="Tour Images" hint="Only three images allowed"></v-file-input>
+                                                </v-col>
+                                            </v-row>
+
                                         </v-col>
                                         <!-- summary -->
                                         <v-col cols="12">
@@ -174,6 +184,7 @@ import {
 //     5: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
 // };
 export default {
+
     name: "ManageTours",
     data: () => ({
         chosenGuides: [],
@@ -248,21 +259,24 @@ export default {
         },
         selectedGuides: {
             get: function () {
+
                 if (this.editedItem.guides) {
-                    let guideIds = this.editedItem.guides.map((el) => {
+                    let guides = this.editedItem.guides.map((el) => {
                         return el._id;
                     });
+                    this.chosenGuides = guides
+                    return guides
 
-                    return guideIds;
                 } else {
-                    return [];
+                    return this.chosenGuides;
+
                 }
             },
             set: function (newValue) {
                 if (this.editedItem.guides) {
-                    return newValue;
+                    return this.chosenGuides = newValue;
                 } else {
-                    return [];
+                    return this.chosenGuides;
                 }
             },
         },
@@ -271,6 +285,7 @@ export default {
     watch: {
         dialog(val) {
             val || this.close();
+            this.resetChosenGuides()
         },
         dialogDelete(val) {
             val || this.closeDelete();
@@ -293,7 +308,11 @@ export default {
             const guides = await users.filter((el) => {
                 return el.role == "guide" || el.role == "lead-guide";
             });
-            console.log(guides);
+
+            guides.map(el => {
+                return el.avatar = process.env.VUE_APP_API_BASE_URL + "/img/users/" + el.photo
+            })
+            console.log(guides, "avatarCheck")
             this.guides = guides;
         },
 
@@ -330,6 +349,15 @@ export default {
             });
         },
 
+        resetChosenGuides() {
+            this.chosenGuides = []
+        },
+
+        remove(item) {
+            const index = this.selectedGuides.indexOf(item._id)
+            if (index >= 0) this.selectedGuides.splice(index, 1)
+        },
+
         save(submitEvent) {
             const value = Object.fromEntries(new FormData(submitEvent.target));
             if (value.secretTour == "true") {
@@ -353,6 +381,7 @@ export default {
                 this.tours.push(value);
             }
             this.datePickerStartDates = [];
+            this.resetChosenGuides
             this.close();
         },
     },
