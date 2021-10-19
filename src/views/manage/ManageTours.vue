@@ -54,7 +54,7 @@
                                         </v-col>
                                         <!-- guides -->
                                         <v-col cols="12">
-                                            <v-autocomplete name="guides" v-model="selectedGuides" :items="guides" filled chips color="blue-grey lighten-2" label="Select" item-text="name" item-value="_id" multiple>
+                                            <v-autocomplete name="guides" deletable-chips v-model="selectedGuides" :items="guides" filled chips color="blue-grey lighten-2" label="Select" item-text="name" item-value="_id" multiple>
                                                 <template v-slot:selection="data">
                                                     <v-chip v-bind="data.attrs" :input-value="data.selected" close @click="data.select" @click:close="remove(data.item)">
                                                         <v-avatar left>
@@ -91,7 +91,7 @@
                                                 <v-col cols="12" sm="6">
                                                     <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="startDates" transition="scale-transition" offset-y min-width="auto">
                                                         <template v-slot:activator="{ on, attrs }">
-                                                            <v-combobox name="startDates" v-model="startDates" multiple chips small-chips label="Start Dates" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-combobox>
+                                                            <v-combobox  name="startDates" v-model="startDates" multiple chips small-chips label="Start Dates" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-combobox>
                                                         </template>
                                                         <v-date-picker v-model="startDates" multiple no-title scrollable>
                                                             <v-spacer></v-spacer>
@@ -126,7 +126,10 @@
                                         <v-col cols="12">
                                             <v-textarea name="description" label="Description" v-model="editedItem.description" :rules="[required('Description')]" hint="Tour description"></v-textarea>
                                         </v-col>
-                                        <!-- imageCover -->
+                                        <!-- start location -->
+                                        <div  v-if="dialog">
+                                      <StartLocationMap :startLocationEdit="editedItem ? editedItem.startLocation : ''" />
+                                      </div>
                                     </v-row>
                                 </v-container>
                             </v-card-text>
@@ -176,16 +179,13 @@ import validations from "@/utils/Validations";
 import {
     format
 } from "date-fns";
-// const srcs = {
-//     1: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-//     2: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-//     3: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-//     4: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-//     5: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
-// };
+
+import StartLocationMap from '../../components/profile/StartLocationMap.vue'
+
 export default {
 
     name: "ManageTours",
+    components:{StartLocationMap},
     data: () => ({
         chosenGuides: [],
 
@@ -231,6 +231,7 @@ export default {
         defaultItem: {},
         ...validations,
         datePickerStartDates: [],
+       
     }),
 
     computed: {
@@ -264,7 +265,7 @@ export default {
                     let guides = this.editedItem.guides.map((el) => {
                         return el._id;
                     });
-                    this.chosenGuides = guides
+                    this.chosenGuides = guides // eslint-disable-line
                     return guides
 
                 } else {
@@ -295,6 +296,7 @@ export default {
     created() {
         this.getTours();
         this.getGuides();
+        
     },
 
     methods: {
@@ -305,15 +307,17 @@ export default {
         async getGuides() {
             const users = await userService.getUsers();
 
-            const guides = await users.filter((el) => {
-                return el.role == "guide" || el.role == "lead-guide";
-            });
+            if (users) {
+                const guides = await users.filter((el) => {
+                    return el.role == "guide" || el.role == "lead-guide";
+                });
 
-            guides.map(el => {
-                return el.avatar = process.env.VUE_APP_API_BASE_URL + "/img/users/" + el.photo
-            })
-            console.log(guides, "avatarCheck")
-            this.guides = guides;
+                guides.map(el => {
+                    return el.avatar = process.env.VUE_APP_API_BASE_URL + "/img/users/" + el.photo
+                })
+                console.log(guides, "avatarCheck")
+                this.guides = guides;
+            }
         },
 
         editItem(item) {
@@ -373,7 +377,7 @@ export default {
             if (this.chosenGuides) {
                 value.guides = value.guides.split(",");
             }
-
+            value.startLocation=this.$store.state.profile.startLocation
             console.log("formValues", value);
             if (this.editedIndex > -1) {
                 Object.assign(this.tours[this.editedIndex], this.editedItem);
@@ -384,7 +388,8 @@ export default {
             this.resetChosenGuides
             this.close();
         },
-    },
+    
+   },
     filters: {
         formatDate: function (value) {
             if (!value) return "";

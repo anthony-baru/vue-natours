@@ -1,48 +1,34 @@
 <template>
-    <v-app-bar dark color="#444" class="">
-        <nav class="nav nav--tours" aria-label="">
-            <router-link to="/" class="nav__el">All tours</router-link>
-            <form class="nav__search" v-show="$route.path == '/'">
-                <button class="nav__search-btn">
-                    <svg>
-                        <use xlink:href="img/icons.svg#icon-search"></use>
-                    </svg>
-                </button>
-                <input type="text" placeholder="Search tours" class="nav__search-input" />
-            </form>
-        </nav>
-        <div class="header__logo">
-            <img src="../assets/img/logo-white.png" alt="Natours logo" />
-        </div>
-        <nav class="nav nav--user" aria-label="">
-            <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el"
-                >My bookings</router-link
-            >
-            <router-link to="/profile" v-if="currentUser" href="#" class="nav__el">
-                <img
-                    :src="baseUrl + '/img/users/' + user.photo"
-                    alt="User photo"
-                    class="nav__user-img"
-                />
-                <span>{{ user.name }}</span>
-            </router-link>
-            <router-link v-if="!currentUser" to="/signin" tag="button" class="nav__el">
-                Sign In
-            </router-link>
-            <router-link v-if="!currentUser" to="/signup" tag="button" class="nav__el nav__el--cta"
-                >Sign up</router-link
-            >
-            <a
-                @click.prevent="logout"
-                v-if="currentUser"
-                to="/signout"
-                tag="button"
-                class="nav__el"
-            >
-                Sign Out
-            </a>
-        </nav>
-    </v-app-bar>
+<v-app-bar dark color="#444" class="">
+    <nav class="nav nav--tours" aria-label="">
+        <router-link to="/" class="nav__el">All tours</router-link>
+        <form class="nav__search" v-show="$route.path == '/'">
+            <button class="nav__search-btn">
+                <svg>
+                    <use xlink:href="img/icons.svg#icon-search"></use>
+                </svg>
+            </button>
+            <input type="text" placeholder="Search tours" class="nav__search-input" />
+        </form>
+    </nav>
+    <div class="header__logo">
+        <img src="../assets/img/logo-white.png" alt="Natours logo" />
+    </div>
+    <nav class="nav nav--user" aria-label="">
+        <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el">My bookings</router-link>
+        <router-link to="/profile" v-if="currentUser" href="#" class="nav__el">
+            <img :src="baseUrl + '/img/users/' + user.photo" alt="User photo" class="nav__user-img" />
+            <span>{{ user.name }}</span>
+        </router-link>
+        <router-link v-if="!currentUser" to="/signin" tag="button" class="nav__el">
+            Sign In
+        </router-link>
+        <router-link v-if="!currentUser" to="/signup" tag="button" class="nav__el nav__el--cta">Sign up</router-link>
+        <a @click.prevent="logout" v-if="currentUser" to="/signout" tag="button" class="nav__el">
+            Sign Out
+        </a>
+    </nav>
+</v-app-bar>
 </template>
 
 <script>

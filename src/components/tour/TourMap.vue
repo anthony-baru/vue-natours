@@ -10,7 +10,6 @@ export default {
     name: "TourMap",
     props: ["locations"],
     mounted() {
-        console.log("locations", this.locations);
         mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN;
         var map = new mapboxgl.Map({
             container: "map",
