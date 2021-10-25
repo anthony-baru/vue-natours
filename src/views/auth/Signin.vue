@@ -77,23 +77,26 @@ export default {
                         email: this.email,
                         password: this.password,
                     });
-                      const payload = {
-                    type: "success",
-                    message: "Login Successful",
-                };
-                    this.$store.commit("alert/showAlert", payload);
+                //       const payload = {
+                //     type: "success",
+                //     message: "Login Successful",
+                // };
+                    // this.$store.commit("alert/showAlert", payload);
+                this.$toast.success("Login Successful!")
                 this.btnDisable = false;
                     this.$router.push("/");
                 }
                 this.btnDisable = false;
             } catch (error) {
                 console.log(error)
-                const payload = {
-                    type: "error",
-                    message: error.response.data.message,
-                };
-                this.$store.commit("alert/showAlert", payload);
+                // const payload = {
+                //     type: "error",
+                //     message: error.response.data.message,
+                // };
+                // this.$store.commit("alert/showAlert", payload);
+                console.log(error,"errr")
                 this.btnDisable = false;
+                this.$toast.error( error.response.data.message)
             }
         },
     },

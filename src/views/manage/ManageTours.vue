@@ -1,6 +1,6 @@
 <template>
 <v-container grid-list-xs>
-    <v-data-table :headers="headers" :items="tours" sort-by="calories" class="elevation-1">
+    <v-data-table :headers="headers" :items="tours" :loading="dtLoading" loading-text="Loading tours. Please wait." sort-by="calories" class="elevation-1">
         <template v-slot:top>
             <v-toolbar flat>
                 <v-toolbar-title>Tours</v-toolbar-title>
@@ -12,7 +12,7 @@
                             New Tour
                         </v-btn>
                     </template>
-                    <v-form ref="crud-form" @submit.prevent="save" v-model="valid" enctype="mulipart/form-data">
+                    <v-form ref="crud-form" @submit.prevent="save" v-model="valid" encType="mulipart/form-data">encType="multipart/form-data"
                         <v-card>
                             <v-card-title>
                                 <span class="text-h5">{{ formTitle }}</span>
@@ -39,7 +39,7 @@
                                         </v-col>
                                         <!-- difficulty -->
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-select name="difficulty" :items="['easy', 'medium', 'hard']" label="Difficulty" v-model="editedItem.difficulty"></v-select>
+                                            <v-select name="difficulty" :items="['easy','difficult', 'medium', 'hard']" label="Difficulty" v-model="editedItem.difficulty"></v-select>
                                         </v-col>
                                         <!-- secret tour -->
                                         <v-col cols="12" sm="6" md="4">
@@ -91,7 +91,7 @@
                                                 <v-col cols="12" sm="6">
                                                     <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="startDates" transition="scale-transition" offset-y min-width="auto">
                                                         <template v-slot:activator="{ on, attrs }">
-                                                            <v-combobox  name="startDates" v-model="startDates" multiple chips small-chips label="Start Dates" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-combobox>
+                                                            <v-combobox name="startDates" v-model="startDates" multiple chips small-chips label="Start Dates" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-combobox>
                                                         </template>
                                                         <v-date-picker v-model="startDates" multiple no-title scrollable>
                                                             <v-spacer></v-spacer>
@@ -127,9 +127,12 @@
                                             <v-textarea name="description" label="Description" v-model="editedItem.description" :rules="[required('Description')]" hint="Tour description"></v-textarea>
                                         </v-col>
                                         <!-- start location -->
-                                        <div  v-if="dialog">
-                                      <StartLocationMap :startLocationEdit="editedItem ? editedItem.startLocation : ''" />
-                                      </div>
+
+                                        <StartLocationMap :startLocationEdit="editedItem ? editedItem.startLocation : ''" />
+
+                                        <!-- locationsMap -->
+                                        <AppLocationsMap />
+
                                     </v-row>
                                 </v-container>
                             </v-card-text>
@@ -165,6 +168,9 @@
             </span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+            <router-link :to="{name:'Tour',params:{id:item.id}}">
+                <v-icon small class="mr-2"> mdi-eye </v-icon>
+            </router-link>
             <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
             <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
@@ -181,12 +187,17 @@ import {
 } from "date-fns";
 
 import StartLocationMap from '../../components/profile/StartLocationMap.vue'
+import AppLocationsMap from '../../components/profile/LocationsMap.vue'
 
 export default {
 
     name: "ManageTours",
-    components:{StartLocationMap},
+    components: {
+        StartLocationMap,
+        AppLocationsMap
+    },
     data: () => ({
+        dtLoading:false,
         chosenGuides: [],
 
         guides: [],
@@ -231,7 +242,7 @@ export default {
         defaultItem: {},
         ...validations,
         datePickerStartDates: [],
-       
+
     }),
 
     computed: {
@@ -296,13 +307,15 @@ export default {
     created() {
         this.getTours();
         this.getGuides();
-        
+
     },
 
     methods: {
         async getTours() {
+            this.dtLoading=true
             let tours = await tourService.getTours();
             this.tours = tours;
+            this.dtLoading=false
         },
         async getGuides() {
             const users = await userService.getUsers();
@@ -362,8 +375,9 @@ export default {
             if (index >= 0) this.selectedGuides.splice(index, 1)
         },
 
-        save(submitEvent) {
-            const value = Object.fromEntries(new FormData(submitEvent.target));
+        async save(submitEvent) {
+            const formData=new FormData(submitEvent.target)
+            const value = Object.fromEntries(formData);
             if (value.secretTour == "true") {
                 value.secretTour = true;
             } else {
@@ -377,19 +391,29 @@ export default {
             if (this.chosenGuides) {
                 value.guides = value.guides.split(",");
             }
-            value.startLocation=this.$store.state.profile.startLocation
-            console.log("formValues", value);
+            value.startLocation = this.$store.state.profile.startLocation
+
+            value.locations = this.$store.state.profile.locations
+            console.log(value, "finalFormValue")
             if (this.editedIndex > -1) {
+
                 Object.assign(this.tours[this.editedIndex], this.editedItem);
             } else {
-                this.tours.push(value);
+                try {
+                    const createdTour = await tourService.addTour(value)
+                    this.tours.push(createdTour);
+                    this.$toast.success("Tour added successfully")
+                } catch (error) {
+                    this.$toast.error(error.response.data.message)
+                }
             }
             this.datePickerStartDates = [];
+            this.$store.state.profile.locations = [];
             this.resetChosenGuides
             this.close();
         },
-    
-   },
+
+    },
     filters: {
         formatDate: function (value) {
             if (!value) return "";

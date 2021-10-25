@@ -1,26 +1,13 @@
 <template>
 <v-col class="startLocationClass" cols="12">
     <v-row>
-        <v-col style="height:50rem" >
+        <v-col>
             <div id="startLocationMap"></div>
         </v-col>
         <v-col>
             <v-row>
-                <v-combobox name="startLocation" v-model="location" label="Start Location" readonly chips :loading="loading"></v-combobox>
+                <v-combobox name="startLocation" v-model="location" label="Start Location" deletable-chips readonly chips :loading="loading"></v-combobox>
             </v-row>
-            <!-- <v-row>
-                <h2>Current Coordinates</h2>
-                <v-spacer></v-spacer>
-                <h3> Latitude:{{ center[0] }}</h3>
-                <v-spacer></v-spacer>
-                <h3> Latitude:{{ center[1] }}</h3>
-            </v-row>
-            <v-row>               
-                <v-text-field readonly :value="location" label="Current Location"></v-text-field>
-            </v-row>
-            <v-row>
-                <v-btn :loading="loading" @click="getLocation" color="primary">Get Location</v-btn>
-            </v-row> -->
         </v-col>
     </v-row>
 </v-col>
@@ -30,7 +17,7 @@
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 // import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+
 
 export default {
     data() {
@@ -49,7 +36,7 @@ export default {
     props: {
         startLocationEdit: {
             type: Object
-        }
+        },
     },
     computed: {
         startLocation: {
@@ -77,7 +64,10 @@ export default {
                 if (this.startLocationEdit) {
                     console.log('creating init startLocation')
                     this.center = this.startLocationEdit.coordinates
-                    this.addLocationToMap()
+                    this.addLocationToMap();
+                    this.getLocation();
+                } else {
+                    this.createMarker()
                 }
 
                 // let geocoder = new MapboxGeocoder({
@@ -85,8 +75,6 @@ export default {
                 //     mapboxgl: mapboxgl,
                 //     marker: true,
                 // });
-
-                this.createMarker()
 
                 // this.map.addControl(geocoder);
 
@@ -124,7 +112,7 @@ export default {
             })
         },
         createMarker() {
-            const bounds = new mapboxgl.LngLatBounds();
+            // const bounds = new mapboxgl.LngLatBounds();
 
             //create marker
             const el = document.createElement("div");
@@ -139,24 +127,24 @@ export default {
                 .addTo(this.map);
 
             //add pop up
-            new mapboxgl.Popup({
-                    offset: 30,
-                })
-                .setLngLat(this.center)
-                .setHTML(`${'test'}</p>`)
-                .addTo(this.map);
+            // new mapboxgl.Popup({
+            //         offset: 30,
+            //     })
+            //     .setLngLat(this.center)
+            //     .setHTML(`${'test'}</p>`)
+            //     .addTo(this.map);
 
             //extends map bounds to include current location
-            bounds.extend(this.center);
+            // bounds.extend(this.center);
 
-            this.map.fitBounds(bounds, {
-                padding: {
-                    top: 200,
-                    bottom: 150,
-                    left: 100,
-                    right: 100,
-                },
-            });
+            // this.map.fitBounds(bounds, {
+            //     padding: {
+            //         top: 200,
+            //         bottom: 150,
+            //         left: 100,
+            //         right: 100,
+            //     },
+            // });
 
             defaultMarker.on("dragend", async (e) => {
                 this.center = Object.values(e.target.getLngLat());
@@ -178,4 +166,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+
+</style>

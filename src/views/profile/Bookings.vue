@@ -16,7 +16,11 @@ export default {
         };
     },
     async created() {
-        this.tours = await tourservice.getTours();
+        try {     this.tours = await tourservice.getTours();
+        } catch (error) {
+            console.log("Booking error",error)
+            this.$toast.error(error.response.data.message)
+        }
     },
 };
 </script>

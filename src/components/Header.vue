@@ -15,7 +15,6 @@
         <img src="../assets/img/logo-white.png" alt="Natours logo" />
     </div>
     <nav class="nav nav--user" aria-label="">
-        <router-link :to="{ name: 'Bookings' }" v-if="currentUser" href="#" class="nav__el">My bookings</router-link>
         <router-link to="/profile" v-if="currentUser" href="#" class="nav__el">
             <img :src="baseUrl + '/img/users/' + user.photo" alt="User photo" class="nav__user-img" />
             <span>{{ user.name }}</span>

@@ -10,6 +10,8 @@ import Reviews from "../views/profile/Reviews.vue";
 import ManageTours from "../views/manage/ManageTours.vue";
 import Tour from "../views/Tour.vue";
 import Profile from "../views/Profile.vue";
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css';
 
 import store from '../store';
 
@@ -111,5 +113,20 @@ router.beforeEach((to, from, next) => {
 //       next();
 //     }
 //   });
+
+router.beforeResolve((to, from, next) => {
+    // If this isn't an initial page load.
+    console.log(from);
+    if (to.name) {
+        // Start the route progress bar.
+        Nprogress.start()
+    }
+    next()
+})
+
+router.afterEach(()=>{
+     // Complete the animation of the route progress bar.
+     Nprogress.done()
+})
 
 export default router;

@@ -7,6 +7,8 @@
             class="elevation-1 data-table"
             :search="search"
             :item-key="reviews.id"
+            :loading="dtLoading"
+            loading-text="Loading reviews. Please wait."
         >
             <!-- templates -->
             <template v-slot:top>
@@ -122,6 +124,7 @@ import { format } from "date-fns";
 export default {
     name: "Reviews",
     data: () => ({
+        dtLoading:false,
         reviews: [],
         dialog: false,
         dialogDelete: false,
@@ -180,11 +183,13 @@ export default {
     methods: {
         async getReviews() {
             try {
+                this.dtLoading=true;
                 this.reviews = await reviewService.getReviews();
                 this.reviews.filter((el) => {
                     el.createdAt = format(new Date(el.createdAt), "dd-MMM-YYY, HH:mm");
                     el.rating = el.rating.toString();
                 });
+                this.dtLoading=false;
                 console.log("myreviews", this.reviews);
             } catch (error) {
                 console.log(error);
