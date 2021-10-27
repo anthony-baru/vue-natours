@@ -150,15 +150,19 @@
                         today!
                     </p>
                     <router-link
-                        :to="authManage.status.loggedIn ? '/book' : '/signin'"
+                        :to="authManage.status.loggedIn ? '' : '/signin'"
                         class="btn btn--green span-all-rows"
                         tag="button"
                         v-text="
                             authManage.status.loggedIn ? 'Book tour now!' : 'Log In to book tour!'
                         "
+                        @click.native="authManage.status.loggedIn ? buyTour() : ''"
                     ></router-link>
                 </div>
             </div>
+        </section>
+        <section>
+            <PurchaseTour :tour="tour"/>
         </section>
     </div>
 </template>
@@ -166,10 +170,11 @@
 <script>
 import tourService from "../services/tour.service";
 import TourMap from "../components/tour/TourMap.vue";
+import PurchaseTour from "../components/tour/BuyTour.vue";
 import { mapState } from "vuex";
 export default {
     name: "tour",
-    components: { TourMap },
+    components: { TourMap ,PurchaseTour},
     data() {
         return {
             baseUrl: process.env.VUE_APP_API_BASE_URL,
@@ -188,12 +193,19 @@ export default {
         }),
     },
     async created() {
+        
         const tourId = this.$route.params.id;
 
         const tour = await tourService.getTour(tourId);
 
         this.tour = tour;
     },
+    methods:{
+        buyTour : function(){
+            // this.$refs.checkoutRef.checkout();
+            this.$emit("check-out")
+        }
+    }
 };
 </script>
 

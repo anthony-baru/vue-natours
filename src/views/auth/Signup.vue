@@ -84,8 +84,8 @@ export default {
         }
     },
     methods: {
-        async handleRegister(payload) {
-            console.log(payload);
+        async handleRegister() {
+            
             this.btnDisabled = true;
             try {
                 const isValid = await this.$validator.validateAll();
@@ -98,18 +98,12 @@ export default {
                         passwordConfirm: this.passwordConfirm,
                     });
 
-                    this.$store.commit("alert/showAlert", {
-                        type: "success",
-                        message: "Registration Successful.",
-                    });
+                    this.$toast.success("Registration Successful.")
                     this.$router.push("/");
                 }
                 this.btnDisabled = false;
             } catch (error) {
-                this.$store.commit("alert/showAlert", {
-                    type: "error",
-                    message: error.response.data.message,
-                });
+                this.$toast.error(error.response.data.message)
                 this.btnDisabled = false;
             }
         },

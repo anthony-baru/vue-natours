@@ -51,7 +51,7 @@ axios.interceptors.request.use(
     },
     function (error) {
         // Do something with request error
-        console.log("axios*******error",error);
+        console.log("axios*******request*error",error);
         
         return Promise.reject(error);
     }
@@ -65,7 +65,7 @@ axios.interceptors.response.use(
     },
     function (error) {
         // Do something with response error
-        console.log("axios*******error",error);
+        console.log("axios*******response*error",error);
         return Promise.reject(error);
     }
 );
