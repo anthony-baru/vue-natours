@@ -36,14 +36,12 @@ export default {
     },
     created() {
         this.$parent.$on("check-out", this.checkout);
-        console.log(this.$route);
         if (this.$route.query.paymentSuccess === "true") {
             this.$toast.success("Payment successful. Thank you for purchasing this tour.");
         }
     },
     methods: {
         async checkout() {
-            console.log("check-out event omitted");
             try {
                 const successUrl = `${process.env.VUE_APP_BASE_URL}/tour/${this.tour._id}?paymentSuccess=true`;
                 const cancelUrl = `${process.env.VUE_APP_BASE_URL}/tour/${this.tour._id}?paymentSuccess=false&cancel=true`;
@@ -53,7 +51,6 @@ export default {
                     console.log("buyTour",buyTour)
                 }
             } catch (error) {
-                console.log(error, "errrorStripe");
                 this.$toast.error(error.message);
             }
         },

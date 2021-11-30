@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Overview from "../views/Overview.vue";
+import HomeTest from "../views/v2/Home.vue";
 import Signin from "../views/auth/Signin.vue";
 import Signup from "../views/auth/Signup.vue";
 import Settings from "../views/profile/Settings.vue";
@@ -10,14 +11,19 @@ import Reviews from "../views/profile/Reviews.vue";
 import ManageTours from "../views/manage/ManageTours.vue";
 import Tour from "../views/Tour.vue";
 import Profile from "../views/Profile.vue";
-import Nprogress from 'nprogress'
-import 'nprogress/nprogress.css';
+import Nprogress from "nprogress";
+import "nprogress/nprogress.css";
 
-import store from '../store';
+import store from "../store";
 
 Vue.use(VueRouter);
 
 const routes = [
+    {
+        path: "/test",
+        name: "HomeTest",
+        component: HomeTest,
+    },
     {
         path: "/",
         name: "Overview",
@@ -70,7 +76,7 @@ const routes = [
                 name: "ManageTours",
                 path: "manage/tours",
                 component: ManageTours,
-                meta:{requiresAuth:true}
+                meta: { requiresAuth: true },
             },
         ],
     },
@@ -91,17 +97,17 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if(to.matched.some(record => record.meta.requiresAuth)) {
-      if (store.state.authManage.status.loggedIn) {
-        next()
-        return
-      }
-      next('/login')
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (store.state.authManage.status.loggedIn) {
+            next();
+            return;
+        }
+        next("/login");
     } else {
-      next()
+        next();
     }
-  })
-  
+});
+
 //   router.beforeEach((to, from, next) => {
 //     if (to.matched.some((record) => record.meta.guest)) {
 //       if (store.state.authManage.status.loggedIn) {
@@ -119,14 +125,14 @@ router.beforeResolve((to, from, next) => {
     console.log(from);
     if (to.name) {
         // Start the route progress bar.
-        Nprogress.start()
+        Nprogress.start();
     }
-    next()
-})
+    next();
+});
 
-router.afterEach(()=>{
-     // Complete the animation of the route progress bar.
-     Nprogress.done()
-})
+router.afterEach(() => {
+    // Complete the animation of the route progress bar.
+    Nprogress.done();
+});
 
 export default router;

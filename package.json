@@ -21,6 +21,7 @@
     "stripe": "^8.184.0",
     "vee-validate": "^2.2.15",
     "vue": "^2.6.11",
+    "vue-mapbox": "^0.4.1",
     "vue-meta": "^2.4.0",
     "vue-router": "^3.2.0",
     "vue-toastification": "^1.7.14",
