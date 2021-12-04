@@ -36,11 +36,15 @@
                         <!-- guides -->
                          <GuidesSelect v-if="dialog" :tourGuides="editedItem.guides"/>
                         <!--startDates-->
+                        <v-col cols="12" sm="12" md="12">
                         <StartDatesSelect v-if="dialog" :startDates="editedItem.startDates"/>
+                        </v-col>
                         <!-- image cover -->
                         <!-- summary -->
                         <!-- start location -->
-                        <StartLocation v-if="dialog"/>
+                        <v-col cols="12" sm="6" md="4">
+                            <StartLocation v-if="dialog" :startLocationEdit="editedItem.startLocation"/>
+                        </v-col>
                         <!-- locationsMap -->
                     </v-row>
                 </v-container>

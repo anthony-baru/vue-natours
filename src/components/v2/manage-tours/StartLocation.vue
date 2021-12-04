@@ -1,174 +1,88 @@
 <template>
-    <v-container >
-        <v-row>
-            <v-col cols="12" sm="12" md="6">
-                <div id="startLocationMap"></div>
-            </v-col>
-            <v-col cols="12" sm="12" md="6">
+    <span>
+        <v-autocomplete
+                @input.native="(event)=>changeEvent(event)"
+                v-model="startLocation"
+                :items="locations"
+                label="Start Location"
+                item-value="description"
+                item-text="description"
+                :loading="loading"
+                clearable
+                chips
+                deletable-chips
+                small-chips
+        >
 
-                    <v-combobox name="startLocation" v-model="location" label="Start Location" deletable-chips readonly
-                                chips :loading="loading"></v-combobox>
-
-            </v-col>
-        </v-row>
-    </v-container>
+        </v-autocomplete>
+    </span>
 </template>
 
 <script>
     import axios from "axios";
-    import mapboxgl from "mapbox-gl";
-    // import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-
 
     export default {
         data() {
             return {
                 loading: false,
-                location: "",
                 access_token: process.env.VUE_APP_MAPBOX_TOKEN,
-                center: [36.81667, -1.28333],
-                map: {},
+                locations: [],
             };
-        },
-        mounted() {
-            this.createStartLocationMap();
-
-        },
-        props: {
-            startLocationEdit: {
-                type: Object
-            },
         },
         computed: {
             startLocation: {
                 get: function () {
-                    return this.$store.state.profile.startLocation;
+                    const startLocationObj = (this.$store.getters["manageTour/getStartLocation"])
+                    if (Object.keys(startLocationObj).length !== 0) {
+                        this.addLocation(startLocationObj)
+                    }
+                    const startLocationId = startLocationObj.description || null
+
+                    return startLocationId;
                 },
                 set: function (val) {
-                    return this.$store.commit("profile/setStartLocation", val);
+                    let startLocation
+                    if (!val) {
+                        startLocation = {}
+                    } else {
+                        startLocation = this.locations.filter(el => {
+                            return el.description === val
+                        })[0]
+                    }
+                    return this.$store.commit("manageTour/setStartLocation", startLocation);
                 },
             },
         },
 
         methods: {
-            async createStartLocationMap() {
-                console.log("createStartLocationMap")
-                try {
-                    mapboxgl.accessToken = this.access_token;
-                    this.map = new mapboxgl.Map({
-                        container: "startLocationMap",
-                        style: "mapbox://styles/mapbox/streets-v11",
-                        center: this.center,
-                        zoom: 11,
-                    });
-
-                    if (this.startLocationEdit) {
-                        console.log('creating init startLocation')
-                        this.center = this.startLocationEdit.coordinates
-                        this.addLocationToMap();
-                        this.getLocation();
-                    } else {
-                        this.createMarker()
-                    }
-
-                    // let geocoder = new MapboxGeocoder({
-                    //     accessToken: this.access_token,
-                    //     mapboxgl: mapboxgl,
-                    //     marker: true,
-                    // });
-
-                    // this.map.addControl(geocoder);
-
-                    // geocoder.on("result", (e) => {
-                    //     defaultMarker.setLngLat(e.result.center).addTo(this.map);
-                    // });
-                } catch (err) {
-                    console.log("map error", err);
-                }
+            addLocation(location) {
+                return this.locations.push(location)
             },
-            async getLocation() {
-                try {
-                    this.loading = true;
-                    const response = await axios.get(
-                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.center[0]},${this.center[1]}.json?access_token=${this.access_token}`
-                    );
-                    this.loading = false;
-                    this.location = response.data.features[0].place_name;
-                    const features = response.data.features[0];
-                    this.startLocation = {
-                        description: features.place_name,
+            async changeEvent(event) {
+                const searchText = event.target._value
+                this.loading = true
+                const locations = await this.forwardGeocode(searchText)
+                this.locations = locations
+                this.loading = false
+            },
+            async forwardGeocode(searchText) {
+                if (searchText.length < 2) {
+                    return
+                }
+                const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
+                    + encodeURIComponent(searchText) + '.json?access_token='
+                    + this.access_token + '&limit=4';
+                const features = (await axios.get(url)).data.features
+
+                return features.map(el => {
+                    return {
                         type: "Point",
-                        address: features.place_name,
-                        coordinates: this.center,
-                    };
-                } catch (err) {
-                    this.loading = false;
-                    console.log(err);
-                }
-            },
-            addLocationToMap() {
-                this.createMarker()
-                this.map.flyTo({
-                    center: this.center
+                        coordinates: el.center,
+                        description: el.place_name,
+                        address: el.text
+                    }
                 })
-            },
-            createMarker() {
-                // const bounds = new mapboxgl.LngLatBounds();
-
-                //create marker
-                const el = document.createElement("div");
-                el.className = "marker";
-
-                const defaultMarker = new mapboxgl.Marker({
-                    element: el,
-                    anchor: "bottom",
-                    draggable: true,
-                })
-                    .setLngLat(this.center)
-                    .addTo(this.map);
-
-                //add pop up
-                // new mapboxgl.Popup({
-                //         offset: 30,
-                //     })
-                //     .setLngLat(this.center)
-                //     .setHTML(`${'test'}</p>`)
-                //     .addTo(this.map);
-
-                //extends map bounds to include current location
-                // bounds.extend(this.center);
-
-                // this.map.fitBounds(bounds, {
-                //     padding: {
-                //         top: 200,
-                //         bottom: 150,
-                //         left: 100,
-                //         right: 100,
-                //     },
-                // });
-
-                defaultMarker.on("dragend", async (e) => {
-                    this.center = Object.values(e.target.getLngLat());
-                    await this.getLocation();
-                });
-
-                defaultMarker.on("dragend", async (e) => {
-                    this.center = Object.values(e.target.getLngLat());
-                    await this.getLocation();
-                });
-            },
-            searchMap() {
-
             }
-        },
-        deforeDestroy() {
-            console.log('beforeDestroy')
         }
     };
 </script>
-
-<style scoped>
-    #startLocationMap {
-        min-height: 30rem;
-    }
-</style>

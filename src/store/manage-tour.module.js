@@ -13,6 +13,7 @@ export const manageTour = {
             maxGroupSize: 0,
             guides: [],
             startDates: [],
+            startLocation: {},
         },
         defaultItem: {
             name: "",
@@ -22,12 +23,13 @@ export const manageTour = {
             maxGroupSize: 0,
             guides: [],
             startDates: [],
+            startLocation: {},
         },
         guides: [],
     },
     getters: {
         getStartLocation(state) {
-            return state.startLocation;
+            return state.editedItem.startLocation;
         },
         getLocations(state) {
             return state.locations;
@@ -50,7 +52,7 @@ export const manageTour = {
     },
     mutations: {
         setStartLocation(state, startLocation) {
-            state.startLocation = startLocation;
+            state.editedItem.startLocation = startLocation;
         },
         setLocations(state, location) {
             state.locations.push(location);

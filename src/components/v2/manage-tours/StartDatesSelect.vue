@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <div>
         <v-col
                 cols="12"
                 sm="6"
@@ -60,7 +60,7 @@
                 </v-date-picker>
             </v-menu>
         </v-col>
-    </v-row>
+    </div>
 </template>
 <script>
     import {format} from "date-fns"
