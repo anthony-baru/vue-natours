@@ -1,18 +1,22 @@
 <template>
-    <div>
+    <v-row>
         <v-col
                 cols="12"
-                sm="6"
+                sm="12"
+                md="6"
+
         >
             <v-date-picker
                     v-model="dates"
                     multiple
-
+                    :min="new Date().toISOString().substr(0, 10)"
             ></v-date-picker>
         </v-col>
         <v-col
                 cols="12"
-                sm="6"
+                sm="12"
+                md="6"
+
         >
             <v-menu
                     ref="menu"
@@ -29,7 +33,7 @@
                             multiple
                             chips
                             small-chips
-                            label="Multiple picker in menu"
+                            label="Start Dates"
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
@@ -60,7 +64,7 @@
                 </v-date-picker>
             </v-menu>
         </v-col>
-    </div>
+    </v-row>
 </template>
 <script>
     import {format} from "date-fns"

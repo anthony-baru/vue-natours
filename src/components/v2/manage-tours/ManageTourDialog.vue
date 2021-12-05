@@ -42,10 +42,13 @@
                         <!-- image cover -->
                         <!-- summary -->
                         <!-- start location -->
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6" md="6">
                             <StartLocation v-if="dialog" :startLocationEdit="editedItem.startLocation"/>
                         </v-col>
                         <!-- locationsMap -->
+                        <v-col cols="12" sm="6" md="6">
+                            <Locations v-if="dialog"/>
+                        </v-col>
                     </v-row>
                 </v-container>
             </v-card-text>
@@ -65,20 +68,22 @@
 import GuidesSelect from '@/components/v2/manage-tours/GuidesSelect'
 import StartDatesSelect from '@/components/v2/manage-tours/StartDatesSelect'
 import StartLocation from "./StartLocation";
+import Locations from "./Locations"
 
 export default {
     name: "ManageTour",
     components: {
+        Locations,
         StartLocation,
         GuidesSelect,
-        StartDatesSelect
+        StartDatesSelect,
     },
-    
+
     props: {
         formTitle: {
             type: String,
         },
-        dialog: {
+        dialogProp: {
             type: Boolean,
         },
         item: {
@@ -89,10 +94,19 @@ export default {
         editedItem() {
             return this.item;
         },
+        dialog:{
+            get:function() {
+                return this.dialogProp
+            },
+            set: function(newVal){
+                return this.$emit("change-dialog",newVal)
+            }
+        }
     },
 
     methods: {
         save() {
+            console.log("finalEditedItem",this.item)
             this.$emit("save", this.item);
         },
         close() {

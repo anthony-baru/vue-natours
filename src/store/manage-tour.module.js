@@ -13,6 +13,7 @@ export const manageTour = {
             maxGroupSize: 0,
             guides: [],
             startDates: [],
+            locations: [],
             startLocation: {},
         },
         defaultItem: {
@@ -23,6 +24,7 @@ export const manageTour = {
             maxGroupSize: 0,
             guides: [],
             startDates: [],
+            locations: [],
             startLocation: {},
         },
         guides: [],
@@ -32,7 +34,7 @@ export const manageTour = {
             return state.editedItem.startLocation;
         },
         getLocations(state) {
-            return state.locations;
+            return state.editedItem.locations;
         },
         getEditedItem(state) {
             return state.editedItem;
@@ -55,7 +57,7 @@ export const manageTour = {
             state.editedItem.startLocation = startLocation;
         },
         setLocations(state, location) {
-            state.locations.push(location);
+            state.editedItem.locations = location;
         },
         setEditedItem(state, item) {
             return (state.editedItem = item);

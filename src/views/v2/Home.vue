@@ -8,8 +8,9 @@
 
                 <ManageTourDialog
                         :formTitle="formTitle"
-                        :dialog="dialog"
+                        :dialogProp="dialog"
                         :item="editedItem"
+                        @change-dialog="changeDialogValue"
                         @save="save"
                         @close="close"
                 />
@@ -173,6 +174,9 @@
         },
 
         methods: {
+            changeDialogValue(newVal){
+              return this.dialog = newVal
+            },
             async initialize() {
 
                 const tours = await tourService.getTours();
