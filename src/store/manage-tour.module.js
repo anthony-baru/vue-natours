@@ -15,6 +15,8 @@ export const manageTour = {
             startDates: [],
             locations: [],
             startLocation: {},
+            imageCover: "",
+            images: [],
         },
         defaultItem: {
             name: "",
@@ -26,6 +28,8 @@ export const manageTour = {
             startDates: [],
             locations: [],
             startLocation: {},
+            imageCover: "",
+            images: [],
         },
         guides: [],
     },
@@ -51,6 +55,12 @@ export const manageTour = {
         getStartDates(state) {
             return state.editedItem.startDates;
         },
+        getImageCover(state) {
+            return state.editedItem.imageCover;
+        },
+        getImages(state) {
+            return state.editedItem.images;
+        },
     },
     mutations: {
         setStartLocation(state, startLocation) {
@@ -73,6 +83,12 @@ export const manageTour = {
         },
         setStartDates(state, item) {
             return (state.editedItem.startDates = item);
+        },
+        setImageCover(state, item) {
+            return (state.editedItem.imageCover = item);
+        },
+        setImages(state, item) {
+            return (state.editedItem.images = item);
         },
     },
     actions: {
