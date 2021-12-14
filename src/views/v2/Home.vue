@@ -1,5 +1,5 @@
 <template>
-    <v-data-table :loading="loading" :headers="headers" :items="desserts" sort-by="calories" class="elevation-1">
+    <v-data-table :loading="loading" :headers="headers" :items="tours" sort-by="calories" class="elevation-1">
         <template v-slot:top>
             <v-toolbar flat>
                 <v-toolbar-title>Tours</v-toolbar-title>
@@ -35,7 +35,7 @@
     import ManageTourDialog from "@/components/v2/manage-tours/ManageTourDialog";
     import ManageTourDialogDelete from "@/components/v2/manage-tours/ManageTourDialogDelete";
     import tourService from "../../services/tour.service";
-     // import {mapGetters} from "vuex"
+    // import {mapGetters} from "vuex"
     // import validations from "@/utils/Validations";
 
     export default {
@@ -46,78 +46,6 @@
             loading: false,
             dialog: false,
             dialogDelete: false,
-            tour: {
-                _id: "5c88fa8cf4afda39709c2970",
-                id: "5c88fa8cf4afda39709c2970",
-                name: "The Star Gazer",
-                difficulty: "medium",
-                price: 2997,
-                duration: 9,
-                maxGroupSize: 8,
-                ratingsQuantity: 6,
-                summary: "The most remote and stunningly beautiful places for seeing the night sky",
-                description:
-                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                imageCover: "tour-8-cover.jpg",
-                locations: [
-                    {
-                        type: "Point",
-                        coordinates: [-109.99953, 37.629017],
-                        _id: "5c88fa8cf4afda39709c2973",
-                        description: "Natural Bridges National Monument",
-                        day: 1,
-                    },
-                    {
-                        type: "Point",
-                        coordinates: [-111.50954, 36.883269],
-                        _id: "5c88fa8cf4afda39709c2972",
-                        description: "Horseshoe Bend",
-                        day: 3,
-                    },
-                    {
-                        type: "Point",
-                        coordinates: [-117.07399, 36.501435],
-                        _id: "5c88fa8cf4afda39709c2971",
-                        description: "Death Valley National Park",
-                        day: 6,
-                    },
-                ],
-                slug: "the-star-gazer",
-                durationWeeks: 1.2857142857142858,
-
-                startLocation: {
-                    type: "Point",
-                    description: "Utah, USA",
-                    coordinates: [-109.55099, 37.283469],
-                    address: "Bluff, UT 84512, USA",
-                },
-                rating: 4.5,
-                ratingsAverage: 4.8,
-                images: ["tour-8-1.jpg", "tour-8-2.jpg", "tour-8-3.jpg"],
-                startDates: [
-                    "2021-03-23T10:00:00.000Z",
-                    "2021-10-25T09:00:00.000Z",
-                    "2022-01-30T10:00:00.000Z",
-                ],
-                secretTour: false,
-                guides: [
-                    {
-                        photo: "user-10.jpg",
-                        role: "lead-guide",
-                        _id: "5c8a21d02f8fb814b56fa189",
-                        name: "Steve T. Scaife",
-                        email: "steve@example.com",
-                    },
-                    {
-                        photo: "user-5.jpg",
-                        role: "guide",
-                        _id: "5c8a1f292f8fb814b56fa184",
-                        name: "Leo Gillespie",
-                        email: "leo@example.com",
-                    },
-                ],
-
-            },
             headers: [
                 {
                     text: "Name",
@@ -131,7 +59,7 @@
                 {text: "Group size", value: "maxGroupSize"},
                 {text: "Actions", value: "actions", sortable: false},
             ],
-            desserts: [],
+            tours: [],
             editedIndex: -1,
         }),
 
@@ -139,22 +67,22 @@
             formTitle() {
                 return this.editedIndex === -1 ? "New Item" : "Edit Item";
             },
-           editedItem:{
-                set: function(newVal){
-                    return this.$store.commit("manageTour/setEditedItem",newVal)
-               },
-               get:function () {
+            editedItem: {
+                set: function (newVal) {
+                    return this.$store.commit("manageTour/setEditedItem", newVal)
+                },
+                get: function () {
                     return this.$store.getters["manageTour/getEditedItem"]
-               }
-           },
-            defaultItem:{
-                set: function(newVal){
-                    return this.$store.commit("manageTour/setDefaultItem",newVal)
-               },
-               get:function () {
+                }
+            },
+            defaultItem: {
+                set: function (newVal) {
+                    return this.$store.commit("manageTour/setDefaultItem", newVal)
+                },
+                get: function () {
                     return this.$store.getters["manageTour/getDefaultItem"]
-               }
-           },
+                }
+            },
         },
 
         watch: {
@@ -174,30 +102,30 @@
         },
 
         methods: {
-            changeDialogValue(newVal){
-              return this.dialog = newVal
+            changeDialogValue(newVal) {
+                return this.dialog = newVal
             },
             async initialize() {
 
                 const tours = await tourService.getTours();
-                this.desserts = tours
+                this.tours = tours
                 console.log(tours);
             },
 
             editItem(item) {
-                this.editedIndex = this.desserts.indexOf(item);
+                this.editedIndex = this.tours.indexOf(item);
                 this.editedItem = Object.assign({}, item);
                 this.dialog = true;
             },
 
             deleteItem(item) {
-                this.editedIndex = this.desserts.indexOf(item);
+                this.editedIndex = this.tours.indexOf(item);
                 this.editedItem = Object.assign({}, item);
                 this.dialogDelete = true;
             },
 
             deleteItemConfirm() {
-                this.desserts.splice(this.editedIndex, 1);
+                this.tours.splice(this.editedIndex, 1);
                 this.closeDelete();
             },
 
@@ -217,13 +145,29 @@
                 });
             },
 
-            save() {
-                if (this.editedIndex > -1) {
-                    Object.assign(this.desserts[this.editedIndex], this.editedItem);
-                } else {
-                    this.desserts.push(this.editedItem);
+            async save(formData) {
+                try {
+                    if (this.editedIndex > -1) {
+                        //edit tour
+                        Object.assign(this.tours[this.editedIndex], this.editedItem);
+
+                    } else {
+                        //add tour
+                        const tour = await tourService.addTour(formData)
+                        console.log("added tour", tour)
+                        if (tour.status === "success") {
+                            this.$toast.success("Tour added successfully.")
+                            this.tours.push(this.editedItem);
+                        } else {
+                            this.$toast.error("An error occurred.")
+                        }
+                    }
+                    this.close();
+                }catch (e) {
+                    console.log("Error Occurred!!",e)
+                    this.$toast.error("An error occurred:"+e.message)
                 }
-                this.close();
+
             },
         },
     };

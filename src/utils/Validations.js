@@ -2,6 +2,14 @@ let required = (propertyType) => {
     return (v) => (v && v.length > 0) || `${propertyType} field is required`;
 };
 
+let intRequired = (propertyType) => {
+    return (v) => (v && v !== Number) || `${propertyType} field is required`;
+};
+
+let filesRequired = (minFiles) => {
+    return (v) => (v && v.length >= minFiles) || `${minFiles} files required`;
+};
+
 let minLength = (propertyType, min_length) => {
     return (v) =>
         (v && v.length >= min_length) ||
@@ -60,6 +68,8 @@ const check = () => (v) => v === true || "You must agree to continue!";
 
 export default {
     required,
+    intRequired,
+    filesRequired,
     minLength,
     maxLength,
     max,

@@ -1,7 +1,7 @@
 <template>
     <v-col cols="12">
         <v-autocomplete :loading="isUpdating" v-model="guideIds" :disabled="isUpdating" :items="guides" filled chips
-                        color="blue-grey lighten-2" label="Guides" item-text="name" item-value="_id" multiple>
+                        color="blue-grey lighten-2" label="Guides" :rules="rules" item-text="name" item-value="_id" multiple>
             <template v-slot:selection="data">
                 <v-chip v-bind="data.attrs" :input-value="data.selected" close @click="data.select"
                         @click:close="remove(data.item)">
@@ -46,6 +46,9 @@
             tourGuides: {
                 type: Array,
 
+            },
+            rules:{
+                type:Array
             }
         },
         computed:{

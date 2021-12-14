@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-file-input v-model="image"  small-chips label="Image Cover" show-size  @change="change">
+        <v-file-input :rules="[ v => !!v || 'File is required']" v-model="image"  small-chips label="Image Cover" show-size  @change="change">
         </v-file-input>
         <v-avatar>
             <img v-if="imageUrl" :src="imageUrl" alt="">
@@ -29,7 +29,7 @@
                 },
             }
         },
-        props:['existingImageName'],
+        props:['existingImageName','rules'],
         async mounted() {
             if(this.originalFilename && !this.originalFilename.name) {
                 this.image = await this.convertImageUrlToFile(this.originalFilename, this.originalFileUrl)

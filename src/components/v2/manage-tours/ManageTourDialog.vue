@@ -18,50 +18,50 @@
                         </v-col>
                         <!-- difficulty -->
                         <v-col cols="12" sm="6" md="4">
-                            <v-select name="difficulty" :items="['easy','medium', 'difficult','hard']" label="Difficulty" v-model="editedItem.difficulty"></v-select>
+                            <v-select name="difficulty" :items="['easy','medium', 'difficult','hard']" label="Difficulty" :rules="[required('Difficulty')]" v-model="editedItem.difficulty"></v-select>
                         </v-col>
                         <!-- price -->
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="editedItem.price" label="Price"></v-text-field>
+                            <v-text-field label="Price" :rules="[intRequired('Price')]" type="number" v-model="editedItem.price"></v-text-field>
                         </v-col>
                         <!-- duration -->
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="editedItem.duration" label="Duration"></v-text-field>
+                            <v-text-field v-model="editedItem.duration" label="Duration" :rules="[intRequired('Duration')]" type="number" ></v-text-field>
                         </v-col>
                         <!-- max group size -->
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="editedItem.maxGroupSize" label="Group size"></v-text-field>
+                            <v-text-field v-model="editedItem.maxGroupSize" label="Group size" :rules="[intRequired('Group size')]" type="number"></v-text-field>
                         </v-col>
 
                         <!-- guides -->
-                         <GuidesSelect v-if="dialog" :tourGuides="editedItem.guides"/>
+                         <GuidesSelect c :tourGuides="editedItem.guides" :rules="[required('Guides')]"/>
                         <!-- summary-->
                         <v-col cols="12" >
-                            <v-text-field v-model="editedItem.summary" label="Summary"></v-text-field>
+                            <v-text-field v-model="editedItem.summary" label="Summary" :rules="[required('Summary')]"></v-text-field>
                         </v-col>
                         <!-- description-->
                         <v-col cols="12">
-                            <v-textarea v-model="editedItem.description" label="Description" ></v-textarea>
+                            <v-textarea v-model="editedItem.description" label="Description" :rules="[required('Description')]" ></v-textarea>
                         </v-col>
                         <!--startDates-->
                         <v-col cols="12" sm="12" md="12">
-                        <StartDatesSelect v-if="dialog" :startDates="editedItem.startDates"/>
+                        <StartDatesSelect v-if="dialog" :startDates="editedItem.startDates" :rules="required('Start Dates')" />
                         </v-col>
                         <!-- start location -->
                         <v-col cols="12" sm="6" md="6">
-                            <StartLocation v-if="dialog" :startLocationEdit="editedItem.startLocation"/>
+                            <StartLocation v-if="dialog" :startLocationEdit="editedItem.startLocation" :rules="required('Start Location')" />
                         </v-col>
                         <!-- locationsMap -->
                         <v-col cols="12" sm="6" md="6">
                             <Locations v-if="dialog"/>
                         </v-col>
                         <!-- image cover -->
-                        <v-col cols="12" md="4" v-if="dialog">
-                            <ImageCover :existingImageName="editedItem.imageCover" v-if="dialog"/>
+                        <v-col cols="12" md="4" >
+                            <ImageCover  :existingImageName="editedItem.imageCover" v-if="dialog"/>
                         </v-col>
                         <!--images-->
                         <v-col cols="12" md="8" v-if="dialog" >
-                            <Images :existingImages="editedItem.images"/>
+                            <Images :rules="[required('Images'),filesRequired(3)]" :existingImages="editedItem.images"/>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -134,11 +134,52 @@ export default {
         save() {
             console.log("finalEditedItem",this.item)
             this.$refs.form.validate()
-            if(this.valid) return this.$emit("save", this.item);
+            if(this.valid) {
+               const formData=this.prepareFormData(this.$store.getters["manageTour/getEditedItem"])
+                return this.$emit("save", formData)
+            };
         },
         close() {
             this.$emit("close");
         },
+        prepareFormData(data){
+            let form_data = new FormData();
+            for (let key in data) {
+                switch (key) {
+                    case "images":
+                        data.images.forEach((image) => {
+                            form_data.append("images", image);
+                        })
+                        break;
+
+                    case "locations":
+                        data.locations.forEach((location) => {
+                            form_data.append("locations[]", JSON.stringify(location));
+                        })
+                        break;
+
+                    case "startLocation":
+                        form_data.append("startLocation", JSON.stringify(data.startLocation));
+                        break;
+
+                    case "guides":
+                        data.guides.forEach((guide) => {
+                            form_data.append("guides[]", guide);
+                        })
+                        break;
+
+                    case "startDates":
+                        data.startDates.forEach((date) => {
+                            form_data.append("startDates[]", date);
+                        })
+                        break;
+                    default:
+                        form_data.append(key, data[key]);
+                        break;
+                }
+            }
+            return form_data
+        }
     },
 };
 </script>
