@@ -1,4 +1,5 @@
 <template>
+    <v-container grid-list-xs>
     <v-data-table :loading="loading" :headers="headers" :items="tours" sort-by="calories" class="elevation-1">
         <template v-slot:top>
             <v-toolbar flat>
@@ -29,6 +30,7 @@
             <v-btn color="primary" @click="initialize"> Reset</v-btn>
         </template>
     </v-data-table>
+    </v-container>
 </template>
 
 <script>
@@ -119,14 +121,26 @@
             },
 
             deleteItem(item) {
-                this.editedIndex = this.tours.indexOf(item);
-                this.editedItem = Object.assign({}, item);
-                this.dialogDelete = true;
+                try {
+                    this.editedIndex = this.tours.indexOf(item);
+                    this.editedItem = Object.assign({}, item);
+                    this.dialogDelete = true;
+                } catch (e) {
+                    this.$toast.error(`Error occurred: ${e.message}`)
+                }
             },
 
-            deleteItemConfirm() {
-                this.tours.splice(this.editedIndex, 1);
-                this.closeDelete();
+            async deleteItemConfirm() {
+                try {
+                    const deletedTour=await tourService.deleteTour(this.editedItem.id)
+                    console.log(deletedTour,"deleted tour")
+                    this.tours.splice(this.editedIndex, 1);
+                    this.closeDelete();
+                    this.$toast.success("Tour deleted successfully.")
+                }catch (e) {
+                    this.$toast.error(`Error occurred: ${e.message}`)
+                }
+
             },
 
             close() {
@@ -149,8 +163,13 @@
                 try {
                     if (this.editedIndex > -1) {
                         //edit tour
-                        Object.assign(this.tours[this.editedIndex], this.editedItem);
-
+                        const tour = await tourService.updateTour(this.editedItem.id,formData)
+                        if (tour.status === "success") {
+                            this.$toast.success("Tour updated successfully.")
+                            Object.assign(this.tours[this.editedIndex], this.editedItem);
+                        } else {
+                            this.$toast.error("An error occurred.")
+                        }
                     } else {
                         //add tour
                         const tour = await tourService.addTour(formData)

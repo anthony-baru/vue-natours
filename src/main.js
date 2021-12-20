@@ -1,5 +1,5 @@
 import Vue from "vue";
-import App from "./App2.vue";
+import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import VeeValidate from "vee-validate";
@@ -9,7 +9,7 @@ import axios from "axios";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
-// require("@/assets/css/style.css");
+require("@/assets/css/style.css");
 // axios.defaults.withCredentials = true
 import Nprogress from "nprogress";
 import "nprogress/nprogress.css";

@@ -7,7 +7,7 @@ let intRequired = (propertyType) => {
 };
 
 let filesRequired = (minFiles) => {
-    return (v) => (v && v.length >= minFiles) || `${minFiles} files required`;
+    return (v) => (v && v.length == minFiles) || `${minFiles} files required`;
 };
 
 let minLength = (propertyType, min_length) => {

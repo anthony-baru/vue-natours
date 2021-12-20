@@ -2,13 +2,13 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Overview from "../views/Overview.vue";
-import HomeTest from "../views/v2/Home.vue";
+import HomeTest from "../views/v2/ManageTours.vue";
 import Signin from "../views/auth/Signin.vue";
 import Signup from "../views/auth/Signup.vue";
 import Settings from "../views/profile/Settings.vue";
 import Bookings from "../views/profile/Bookings.vue";
 import Reviews from "../views/profile/Reviews.vue";
-import ManageTours from "../views/manage/ManageTours.vue";
+import ManageTours from "../views/v2/ManageTours";
 import Tour from "../views/Tour.vue";
 import Profile from "../views/Profile.vue";
 import Nprogress from "nprogress";

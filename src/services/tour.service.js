@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:3000/api/v1";
 const getTours = async () => {
@@ -21,6 +22,18 @@ const getTour = async (tourId) => {
     }
 };
 
+const deleteTour = async (tourId) => {
+    try {
+        const { data: tour } = await axios.delete(API_URL + `/tours/${tourId}`, {
+            headers: { ...authHeader() },
+        });
+        return tour;
+    } catch (error) {
+        console.log(error);
+        await Promise.reject(error);
+    }
+};
+
 const addTour = async (tourInfo) => {
     const { data: tour } = await axios.post(API_URL + `/tours`, tourInfo, {
         headers: { "Content-Type": `multipart/form-data;` },
@@ -28,4 +41,11 @@ const addTour = async (tourInfo) => {
     return tour;
 };
 
-export default { getTours, getTour, addTour };
+const updateTour = async (tourId, tourInfo) => {
+    const { data: tour } = await axios.patch(API_URL + `/tours/${tourId}`, tourInfo, {
+        headers: { "Content-Type": `multipart/form-data;`, ...authHeader() },
+    });
+    return tour;
+};
+
+export default { getTours, getTour, addTour, updateTour, deleteTour };

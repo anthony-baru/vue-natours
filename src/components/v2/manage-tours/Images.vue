@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-file-input v-model="images" small-chips show-size  label="Images" multiple @change="change"></v-file-input>
+        <v-file-input v-model="images" small-chips show-size  label="Images" :rules="rules" multiple @change="change"></v-file-input>
         <v-container class="d-flex flex-row">
             <v-row>
             <v-col cols="6" sm="4" md="2" v-for="(imageUrl,i) in imageUrls" :key="i">
